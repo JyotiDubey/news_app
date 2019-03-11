@@ -11,24 +11,27 @@ import io.reactivex.schedulers.Schedulers
  * Created by jyotidubey on 2019-03-09.
  */
 class NewsListViewModel {
-   private val newsLiveData = MutableLiveData<List<News>>()
+    private val newsLiveData = MutableLiveData<List<News>>()
     private val dataManager = NewsDataManager()
 
     init {
+        fetchNews()
+    }
+
+    private fun fetchNews() {
         dataManager.getTopHeadlines("us", 1)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 newsLiveData.value = it.news
             }, {
-                System.out.println("ERRROR")
-            })
 
+            })
     }
 
     fun getLiveData() = newsLiveData as LiveData<List<News>>
 
-    public interface NewItemClickHandler{
+    interface NewItemClickHandler {
         fun onNewsItemClicked(news: News)
     }
 }

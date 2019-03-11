@@ -47,10 +47,4 @@ ext {
     rxAndroidVersion = '2.0.1'
     recyclerViewVersion = '1.0.0'
     retrofitVersion = '2.5.0'
-
-
-
-
-
-
 }

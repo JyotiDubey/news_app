@@ -4,11 +4,6 @@
         <variable name="news" type="com.grab.news.data.model.News"/>
         <variable name="handler" type="com.grab.news.ui.news.viewmodel.NewsListViewModel.NewItemClickHandler"/>
     </data>
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -19,6 +14,4 @@
                   android:text="@{news.title}"/>
 
     </LinearLayout>
-    </RelativeLayout>
-
 </layout>
