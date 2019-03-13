@@ -17,6 +17,8 @@ import com.grab.news.ui.news.viewmodel.NewsListViewModel
 import kotlinx.android.synthetic.main.activity_news_list.*
 import javax.inject.Inject
 
+
+
 class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewItemClickHandler {
 
     @Inject

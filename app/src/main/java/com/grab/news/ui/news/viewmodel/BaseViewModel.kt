@@ -9,7 +9,7 @@ import io.reactivex.disposables.CompositeDisposable
  */
 open class BaseViewModel(protected val disposable: CompositeDisposable) : ViewModel(){
 
-    var isLoading = ObservableField(true)
+    var isLoading = ObservableField(false)
 
     fun updateProgress(loading: Boolean){
         isLoading.set(loading)

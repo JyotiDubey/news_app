@@ -38,15 +38,14 @@ class NewsListViewModel(disposable: CompositeDisposable, private val dataManager
     fun loadNextPage() = paginator.onNext(true)
 
     private fun fetchNews() {
+        progress.value = true
         disposable.add(
             dataManager.getNews("us", 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     progress.value = false
-                    val currentNews = newsLiveData.value ?: mutableListOf()
-                    currentNews.addAll(0,it)
-                    newsLiveData.value = currentNews
+                    newsLiveData.value = it as MutableList<News>
                 }, {
                 })
         )

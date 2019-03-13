@@ -2,8 +2,11 @@ package com.grab.news.ui.news
 
 import android.webkit.WebView
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.grab.news.R
 import com.grab.news.data.model.News
 
 /**
@@ -18,15 +21,16 @@ class BindingUtils {
             settings.builtInZoomControls = true
             settings.displayZoomControls = false
             settings.javaScriptEnabled = true
-            view.loadUrl(webViewContent.url)
+            webViewContent.url?.let { view.loadUrl(it) }
 
         }
 
         @BindingAdapter("bind:src")
         @JvmStatic
-        fun populateImage(view: ImageView ,url: String) {
+        fun populateImage(view: ImageView ,url: String?) {
             Glide.with(view.context)
                 .load(url)
+                .apply(RequestOptions().error(R.drawable.ic_newspaper))
                 .into(view)
 
         }

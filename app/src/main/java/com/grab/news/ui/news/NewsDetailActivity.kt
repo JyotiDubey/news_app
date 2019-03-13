@@ -79,10 +79,6 @@ class NewsDetailActivity : AppCompatActivity() {
 
             }
 
-            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
-                viewModel.hideProgress()
-                SystemUtils.openUrlInBrowser(view.context, request.url.toString())
-            }
         }
     }
 

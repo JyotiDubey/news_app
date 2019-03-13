@@ -22,6 +22,10 @@ data class NewsListResponse(
 @Parcelize
 @Entity(tableName = "news")
 data class News(
+
+    @PrimaryKey(autoGenerate = true)
+    val id:Int,
+
     @Expose
     @ColumnInfo(name = "author")
     @SerializedName("author")
@@ -33,15 +37,15 @@ data class News(
     val title: String?,
 
     @Expose
-    @PrimaryKey
     @ColumnInfo(name = "url")
     @SerializedName("url")
-    val url: String,
+    val url: String?,
 
     @Expose
     @ColumnInfo(name = "urlToImage")
     @SerializedName("urlToImage")
     val urlToImage: String?,
+
     @Expose
     @ColumnInfo(name = "publishedAt")
     @SerializedName("publishedAt")
@@ -62,9 +66,11 @@ data class Source(
     @SerializedName("name") val name: String?
 ):Parcelable
 
-class NewsDiffCallback(var updatesNews:List<News>, var oldNews: List<News>) : DiffUtil.Callback(){
+class NewsDiffCallback(private var oldNews:List<News>, var updatesNews: List<News>) : DiffUtil.Callback(){
 
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) = oldNews[oldItemPosition].url == updatesNews[newItemPosition].url
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) : Boolean {
+        return oldNews[oldItemPosition].url == updatesNews[newItemPosition].url
+    }
 
     override fun getOldListSize() = oldNews.size
 
