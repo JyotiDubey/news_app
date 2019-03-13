@@ -30,7 +30,6 @@ class NewsListAdapter(val handler: NewsListViewModel.NewItemClickHandler) : Recy
         holder.onBind(news = news[position])
     }
 
-
     fun update(updatesNewsList: List<News>) {
         val diffResult = DiffUtil.calculateDiff(NewsDiffCallback(news, updatesNewsList))
         this.news.clear()

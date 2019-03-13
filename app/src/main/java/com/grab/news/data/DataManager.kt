@@ -1,12 +1,16 @@
 package com.grab.news.data
 
-import com.grab.news.data.model.NewsListResponse
+import com.grab.news.data.model.News
+import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
+
 
 /**
  * Created by jyotidubey on 2019-03-09.
  */
 interface DataManager{
-    fun getTopHeadlines(country: String, page: Int): Single<NewsListResponse>
+
+    fun getNews(country: String, page: Int):Flowable<List<News>>
 
 }
