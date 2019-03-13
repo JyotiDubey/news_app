@@ -21,7 +21,7 @@ class NewsDataManager @Inject constructor(private val dbHelper: DBHelper, privat
 
     override fun getNews(country: String, page: Int): Flowable<List<News>> {
         val local = fetchHeadlinesFromDB()
-        val remote = fetchHeadLinesFromApi(country, page).flatMapCompletable { updateNews(it) }.onErrorComplete().delay(10,TimeUnit.SECONDS)
+        val remote = fetchHeadLinesFromApi(country, page).flatMapCompletable { updateNews(it) }.onErrorComplete()
         return local.mergeWith(remote)
     }
 
