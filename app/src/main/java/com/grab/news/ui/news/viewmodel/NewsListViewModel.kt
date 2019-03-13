@@ -44,7 +44,9 @@ class NewsListViewModel(disposable: CompositeDisposable, private val dataManager
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     progress.value = false
-                    newsLiveData.value = it as MutableList
+                    val currentNews = newsLiveData.value ?: mutableListOf()
+                    currentNews.addAll(0,it)
+                    newsLiveData.value = currentNews
                 }, {
                 })
         )
