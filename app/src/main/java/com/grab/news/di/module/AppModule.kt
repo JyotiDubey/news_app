@@ -10,9 +10,10 @@ import com.grab.news.data.NewsDataManager
 import com.grab.news.data.local.database.AppDatabase
 import com.grab.news.data.local.database.DBHelper
 import com.grab.news.data.local.database.NewsDBHelper
+import com.grab.news.data.local.database.NewsDao
 import com.grab.news.data.remote.ApiHelper
 import com.grab.news.data.remote.NewsApiHelper
-import com.grab.news.ui.news.viewmodelFactory.ViewModelProviderFactory
+import com.grab.news.ui.news.ViewModelProviderFactory
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable
@@ -53,6 +54,10 @@ class AppModule(val app:Application) {
     @Singleton
     @Provides
     internal fun provideDBHelper(dbHelper: NewsDBHelper): DBHelper = dbHelper
+
+    @Singleton
+    @Provides
+    internal fun provideNewsDao(database: AppDatabase): NewsDao = database.newsDao()
 
     @Provides
     internal fun provideCompositeDisposable(): CompositeDisposable = CompositeDisposable()

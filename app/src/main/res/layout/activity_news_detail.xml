@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:bind="http://schemas.android.com/tools">
+
     <data>
-        <variable name="news" type="com.grab.news.data.model.News"/>
+
+        <import type="android.view.View" />
+
+        <variable name="viewModel" type="com.grab.news.ui.news.viewmodel.NewsDetailViewModel"/>
+
+        <variable
+                name="news"
+                type="com.grab.news.data.model.News" />
+
     </data>
-    <LinearLayout
+    <FrameLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -13,6 +22,14 @@
                 android:id="@+id/webView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"/>
-    </LinearLayout>
+                android:scrollbars="none"
+                bind:webViewContent="@{news}"/>
+        <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/progress"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+    </FrameLayout>
 </layout>

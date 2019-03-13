@@ -2,40 +2,102 @@ package com.grab.news.ui.news
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.grab.news.NewsApplication
 import com.grab.news.R
+import com.grab.news.SystemUtils
 import com.grab.news.data.model.News
 import com.grab.news.databinding.ActivityNewsDetailBinding
+import com.grab.news.ui.news.viewmodel.NewsDetailViewModel
 import kotlinx.android.synthetic.main.activity_news_detail.*
+import javax.inject.Inject
+
 
 /**
  * Created by jyotidubey on 2019-03-09.
  */
-class NewsDetailActivity : AppCompatActivity(){
+class NewsDetailActivity : AppCompatActivity() {
+
+
+    @Inject
+    internal lateinit var factory: ViewModelProvider.NewInstanceFactory
+
+    private lateinit var viewModel: NewsDetailViewModel
 
     companion object {
-        fun startNewsDetailActivity(context: Context, news: News){
+
+        private const val EXTRA_NEWS = "Intent:Extra:News"
+
+        fun startNewsDetailActivity(context: Context, news: News) {
             var intent = Intent(context, NewsDetailActivity::class.java)
-            intent.putExtra("News",news)
+            intent.putExtra(EXTRA_NEWS, news)
             context.startActivity(intent)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DataBindingUtil.setContentView<ActivityNewsDetailBinding>(this, R.layout.activity_news_detail)
-        var news  = intent.extras.getParcelable("News") as News
-        val settings = webView.settings
-        settings.builtInZoomControls = true
-        settings.displayZoomControls = false
-        settings.javaScriptEnabled = true
-        if (true) {
-            webView.loadUrl( news.url)
+        performDependencyInjections()
+
+        viewModel = obtainViewModel()
+
+
+        val binding = setUpBinding()
+
+        binding.news = intent.extras.getParcelable(EXTRA_NEWS) as News
+
+        binding.viewModel = viewModel
+
+        setupWebView()
+
+        addLiveDataObservers()
+
+
+    }
+
+    private fun setupWebView() {
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView, url: String) {
+                super.onPageFinished(webView, url)
+                viewModel.hideProgress()
+
+            }
+
+            override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                viewModel.showProgress()
+
+            }
+
+            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+                viewModel.hideProgress()
+                SystemUtils.openUrlInBrowser(view.context, request.url.toString())
+            }
         }
+    }
 
+    private fun setUpBinding() =
+        DataBindingUtil.setContentView<ActivityNewsDetailBinding>(this, R.layout.activity_news_detail)
 
+    private fun obtainViewModel() = ViewModelProviders.of(this, factory).get(NewsDetailViewModel::class.java)
 
+    private fun performDependencyInjections() {
+        NewsApplication.get(this).getAppComponent().inject(this)
+    }
+
+    private fun addLiveDataObservers() {
+        viewModel.getProgressLiveData().observe(this, Observer {
+            viewModel.updateProgress(it)
+        })
     }
 }

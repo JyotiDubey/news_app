@@ -1,4 +1,8 @@
-package com.grab.news.ui.news.viewmodelFactory
+package com.grab.news.ui.news
+
+/**
+ * Created by jyotidubey on 2019-03-13.
+ */
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -20,7 +24,7 @@ class ViewModelProviderFactory @Inject constructor(
         if (modelClass.isAssignableFrom(NewsListViewModel::class.java)) {
             return NewsListViewModel(disposable, dataManager) as T
         } else if (modelClass.isAssignableFrom(NewsDetailViewModel::class.java)) {
-            return NewsDetailViewModel() as T
+            return NewsDetailViewModel(disposable) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

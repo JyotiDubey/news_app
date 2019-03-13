@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.grab.news.NewsApplication
 import com.grab.news.R
 import com.grab.news.data.model.News
@@ -53,6 +54,14 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewItemClickHand
     private fun setUpAdapter() {
         new_list.layoutManager = LinearLayoutManager(this)
         new_list.adapter = adapter
+        new_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (!new_list.canScrollVertically(1)) {
+                    viewModel.loadNextPage()
+                }
+            }
+        })
+
     }
 
     private fun addLiveDataObservers() {

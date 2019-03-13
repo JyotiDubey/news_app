@@ -10,16 +10,12 @@ import javax.inject.Inject
 /**
  * Created by jyotidubey on 2019-03-12.
  */
-class NewsDBHelper @Inject constructor(private val database:AppDatabase) : DBHelper {
+class NewsDBHelper @Inject constructor(private val newsDao :NewsDao) : DBHelper {
 
-    override fun getNews() = database.newsDao().loadAll()
+    override fun getNews() = newsDao.loadAll()
 
-    override fun isNewsTableEmpty(): Observable<Boolean> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun saveLatestNews(news: List<News>) = Completable.create{
-        database?.newsDao()?.cleanAndInsert(news)
+    override fun updateNews(news: List<News>) = Completable.create{
+        newsDao.cleanAndInsert(news)
         it.onComplete()
     }
 

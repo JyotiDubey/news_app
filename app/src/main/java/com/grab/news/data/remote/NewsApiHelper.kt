@@ -10,5 +10,5 @@ import javax.inject.Inject
 class NewsApiHelper @Inject constructor() : ApiHelper {
 
     private val newsService = NewsServiceGenerator.createService(NewsService::class.java)
-    override fun getTopHeadlines(country: String, page: Int) = newsService.getTopHeadlines(country, page)
+    override fun fetchHeadlinesFromServer(country: String, page: Int) = newsService.getTopHeadlines(country, page)
 }

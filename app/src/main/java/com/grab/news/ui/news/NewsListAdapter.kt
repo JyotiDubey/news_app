@@ -32,9 +32,10 @@ class NewsListAdapter(val handler: NewsListViewModel.NewItemClickHandler) : Recy
 
     fun update(updatesNewsList: List<News>) {
         val diffResult = DiffUtil.calculateDiff(NewsDiffCallback(news, updatesNewsList))
+
+        diffResult.dispatchUpdatesTo(this)
         this.news.clear()
         this.news.addAll(updatesNewsList)
-        diffResult.dispatchUpdatesTo(this)
     }
 
     inner class NewsListItemViewHolder(var binding: ItemNewsListBinding) : RecyclerView.ViewHolder(binding.root) {
