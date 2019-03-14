@@ -9,10 +9,20 @@ import io.reactivex.disposables.CompositeDisposable
  */
 open class BaseViewModel(protected val disposable: CompositeDisposable) : ViewModel(){
 
-    var isLoading = ObservableField(false)
+    var loadingState = ObservableField(true)
+    var emptyViewState = ObservableField(false)
+    var isDeviceOnline = ObservableField(false)
 
     fun updateProgress(loading: Boolean){
-        isLoading.set(loading)
+        loadingState.set(loading)
+    }
+
+    fun updateEmptyView(shouldShowEmptyView: Boolean){
+        emptyViewState.set(shouldShowEmptyView)
+    }
+
+    fun updateNetworkConnectivityView(isNetworkConnected: Boolean){
+        isDeviceOnline.set(isNetworkConnected)
     }
     override fun onCleared() {
         disposable.dispose()

@@ -24,12 +24,13 @@
                 android:layout_height="wrap_content"
                 android:scrollbars="none"
                 bind:webViewContent="@{news}"/>
+
         <androidx.core.widget.ContentLoadingProgressBar
                 android:id="@+id/progress"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{viewModel.loadingState ? View.VISIBLE : View.GONE}" />
     </FrameLayout>
 </layout>

@@ -2,33 +2,69 @@
 <layout>
     <data>
 
-        <import type="android.view.View" />
+        <import type="android.view.View"/>
+        <import type="com.grab.news.R"/>
+
 
         <variable
                 name="viewModel"
-                type="com.grab.news.ui.news.viewmodel.NewsListViewModel" />
+                type="com.grab.news.ui.news.viewmodel.NewsListViewModel"/>
+        <variable
+                name="swipeToRefreshHandler"
+                type="androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener"/>
+        <variable
+                name="retryButtonClickHandler"
+                type="com.grab.news.ui.news.viewmodel.NewsListViewModel.NewsListScreenActionHandler"/>
 
     </data>
-    <FrameLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.news.NewsListActivity">
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 xmlns:tools="http://schemas.android.com/tools"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 tools:context=".ui.news.NewsListActivity">
 
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/new_list"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/new_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+        <androidx.appcompat.widget.LinearLayoutCompat android:layout_width="match_parent"
+                                                      android:layout_height="match_parent"
+                                                      android:gravity="center"
+                                                      android:orientation="vertical"
+                                                      android:visibility="@{viewModel.emptyViewState &amp;&amp; !viewModel.loadingState? View.VISIBLE : View.GONE}">
+            <androidx.appcompat.widget.AppCompatImageView android:layout_width="wrap_content"
+                                                          android:layout_height="wrap_content"
+                                                          android:src="@drawable/ic_empty_state"/>
+            <androidx.appcompat.widget.AppCompatTextView android:layout_width="wrap_content"
+                                                         android:layout_height="wrap_content"
+                                                         style="@style/TextAppearance.AppCompat.Subhead"
+                                                         android:layout_margin="8dp"
+                                                         android:text="@string/no_news"/>
+            <androidx.appcompat.widget.AppCompatTextView android:layout_width="match_parent"
+                                                         android:layout_height="56dp"
+                                                         style="@style/TextAppearance.AppCompat.Widget.Button"
+                                                         android:text="@string/try_again"
+                                                         android:gravity="center"
+                                                         android:layout_margin="16dp"
+                                                         android:background="@color/colorPrimary"
+                                                         android:textColor="@android:color/white"
+                                                         android:onClick="@{()->retryButtonClickHandler.onRetryButtonClicked()}"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.core.widget.ContentLoadingProgressBar android:id="@+id/progress"
+                                                        style="?android:attr/progressBarStyleLarge"
+                                                        android:layout_width="wrap_content"
+                                                        android:layout_height="wrap_content"
+                                                        android:layout_gravity="center"
+                                                        android:visibility="@{viewModel.loadingState ? View.VISIBLE : View.GONE}"/>
 
-        <androidx.core.widget.ContentLoadingProgressBar
-                android:id="@+id/progress"
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}" />
+        <androidx.appcompat.widget.AppCompatTextView android:layout_width="match_parent"
+                                                     style="@style/TextAppearance.AppCompat.Subhead"
+                                                     android:layout_height="40dp"
+                                                     android:background="@android:color/holo_red_light"
+                                                     android:gravity="center"
+                                                     android:textColor="@android:color/white"
+                                                     android:visibility="@{viewModel.isDeviceOnline ? View.GONE : View.VISIBLE}"
+                                                     android:text="You are offline"/>
     </FrameLayout>
 
 </layout>

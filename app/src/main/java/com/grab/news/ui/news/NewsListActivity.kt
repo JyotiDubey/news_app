@@ -1,13 +1,18 @@
 package com.grab.news.ui.news
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.grab.news.NewsApplication
 import com.grab.news.R
 import com.grab.news.data.model.News
@@ -18,14 +23,26 @@ import kotlinx.android.synthetic.main.activity_news_list.*
 import javax.inject.Inject
 
 
+class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenActionHandler,
+    SwipeRefreshLayout.OnRefreshListener {
 
-class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewItemClickHandler {
+
+    private val networkChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val isDeviceConnectedToInternet = if (manager.activeNetworkInfo == null)
+                false
+            else
+                manager.activeNetworkInfo.isConnected
+            viewModel.updateNetworkConnectivity(isDeviceConnectedToInternet)
+        }
+    }
 
     @Inject
     internal lateinit var factory: ViewModelProvider.NewInstanceFactory
     @Inject
     internal lateinit var adapter: NewsListAdapter
-    private lateinit var viewModel : NewsListViewModel
+    private lateinit var viewModel: NewsListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,14 +55,38 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewItemClickHand
 
         binding.viewModel = viewModel
 
+        binding.swipeToRefreshHandler = this
+
+        binding.retryButtonClickHandler = this
+
+
         setUpAdapter()
 
         addLiveDataObservers()
     }
 
+    override fun onResume() {
+        super.onResume()
+        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkChangeReceiver, intentFilter)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(networkChangeReceiver)
+    }
+
 
     override fun onNewsItemClicked(news: News) {
-        NewsDetailActivity.startNewsDetailActivity(this,news)
+        NewsDetailActivity.startNewsDetailActivity(this, news)
+    }
+
+    override fun onRetryButtonClicked() {
+        viewModel.onRetryClick()
+    }
+
+    override fun onRefresh() {
+
     }
 
     private fun performDependencyInjections() {
@@ -56,14 +97,6 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewItemClickHand
     private fun setUpAdapter() {
         new_list.layoutManager = LinearLayoutManager(this)
         new_list.adapter = adapter
-        new_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (!new_list.canScrollVertically(1)) {
-                    viewModel.loadNextPage()
-                }
-            }
-        })
-
     }
 
     private fun addLiveDataObservers() {
@@ -74,9 +107,20 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewItemClickHand
         viewModel.getProgressLiveData().observe(this, Observer {
             viewModel.updateProgress(it)
         })
+
+        viewModel.getShouldShowEmptyStateLiveData().observe(this, Observer {
+            viewModel.updateEmptyView(it)
+        })
+
+        viewModel.getIsNetworkConnectedStateLiveData().observe(this, Observer {
+            viewModel.updateNetworkConnectivityView(it)
+        })
+
+
     }
 
-    private fun obtainViewModel() = ViewModelProviders.of(this,factory).get(NewsListViewModel::class.java)
+    private fun obtainViewModel() = ViewModelProviders.of(this, factory).get(NewsListViewModel::class.java)
 
-    private fun setUpBinding() = DataBindingUtil.setContentView<ActivityNewsListBinding>(this, R.layout.activity_news_list)
+    private fun setUpBinding() =
+        DataBindingUtil.setContentView<ActivityNewsListBinding>(this, R.layout.activity_news_list)
 }

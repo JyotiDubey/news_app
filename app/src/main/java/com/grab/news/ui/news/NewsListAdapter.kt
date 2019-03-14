@@ -13,7 +13,7 @@ import com.grab.news.ui.news.viewmodel.NewsListViewModel
 /**
  * Created by jyotidubey on 2019-03-09.
  */
-class NewsListAdapter(val handler: NewsListViewModel.NewItemClickHandler) : RecyclerView.Adapter<NewsListAdapter.NewsListItemViewHolder>() {
+class NewsListAdapter(val handler: NewsListViewModel.NewsListScreenActionHandler) : RecyclerView.Adapter<NewsListAdapter.NewsListItemViewHolder>() {
     private var news = mutableListOf<News>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsListItemViewHolder {
@@ -21,7 +21,7 @@ class NewsListAdapter(val handler: NewsListViewModel.NewItemClickHandler) : Recy
             LayoutInflater.from(parent.context),
             parent, false
         )
-        return NewsListItemViewHolder(binding)
+        return NewsListItemViewHolder(binding, handler)
     }
 
     override fun getItemCount() = news.size
@@ -32,13 +32,12 @@ class NewsListAdapter(val handler: NewsListViewModel.NewItemClickHandler) : Recy
 
     fun update(updatesNewsList: List<News>) {
         val diffResult = DiffUtil.calculateDiff(NewsDiffCallback(news, updatesNewsList))
-
         diffResult.dispatchUpdatesTo(this)
         this.news.clear()
         this.news.addAll(updatesNewsList)
     }
 
-    inner class NewsListItemViewHolder(var binding: ItemNewsListBinding) : RecyclerView.ViewHolder(binding.root) {
+    class NewsListItemViewHolder(private var binding: ItemNewsListBinding, private var handler: NewsListViewModel.NewsListScreenActionHandler) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(news: News) {
             binding.news = news
             binding.handler = handler

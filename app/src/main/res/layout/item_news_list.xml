@@ -3,43 +3,48 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable name="news" type="com.grab.news.data.model.News"/>
-        <variable name="handler" type="com.grab.news.ui.news.viewmodel.NewsListViewModel.NewItemClickHandler"/>
+        <variable name="handler" type="com.grab.news.ui.news.viewmodel.NewsListViewModel.NewsListScreenActionHandler"/>
     </data>
 
-      <androidx.cardview.widget.CardView android:layout_width="match_parent"
-                                         android:layout_height="120dp"
-                                         app:cardCornerRadius="0dp"
-                                         android:layout_margin="4dp"
-                                         android:onClick="@{()->handler.onNewsItemClicked(news)}">
+    <androidx.cardview.widget.CardView android:layout_width="match_parent"
+                                       android:layout_height="120dp"
+                                       app:cardCornerRadius="0dp"
+                                       android:layout_margin="4dp"
+                                       android:onClick="@{()->handler.onNewsItemClicked(news)}">
 
-          <LinearLayout
-                  android:orientation="horizontal"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:weightSum="3">
-        <ImageView
-                android:id="@+id/image"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                bind:src="@{news.urlToImage}"/>
-        <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:layout_height="match_parent">
+        <androidx.appcompat.widget.LinearLayoutCompat android:orientation="vertical"
+                                                      android:layout_width="match_parent"
+                                                      android:layout_height="match_parent"
+                                                      android:weightSum="3">
+            <androidx.appcompat.widget.LinearLayoutCompat android:orientation="horizontal"
+                                                          android:layout_width="match_parent"
+                                                          android:layout_weight="2"
+                                                          android:layout_height="0dp">
+                <androidx.appcompat.widget.AppCompatImageView android:id="@+id/image"
+                                                              android:layout_width="0dp"
+                                                              android:layout_height="wrap_content"
+                                                              android:layout_weight="1"
+                                                              android:padding="4dp"
+                                                              bind:src="@{news.urlToImage}"/>
 
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:maxLines="3"
-                      android:text="@{news.title}"/>
-
-            <TextView android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:text="@{news.author+news.publishedAt}"/>
-        </LinearLayout>
-          </LinearLayout>
-      </androidx.cardview.widget.CardView>
+                <androidx.appcompat.widget.AppCompatTextView android:layout_width="0dp"
+                                                             android:layout_height="wrap_content"
+                                                             android:layout_weight="2"
+                                                             android:maxLines="3"
+                                                             android:ellipsize="end"
+                                                             style="@style/TextAppearance.AppCompat.Title"
+                                                             android:text="@{news.title}"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+            <androidx.appcompat.widget.AppCompatTextView android:layout_width="match_parent"
+                                                         android:layout_height="0dp"
+                                                         android:layout_weight="1"
+                                                         android:maxLines="1"
+                                                         android:layout_gravity="center_vertical"
+                                                         android:gravity="center_vertical"
+                                                         style="@style/TextAppearance.AppCompat.Small"
+                                                         android:text="@{news.author+'|'+news.publishedAt}"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
 
 
 </layout>

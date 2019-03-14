@@ -5,6 +5,7 @@ import com.grab.news.data.model.NewsListResponse
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import io.reactivex.subjects.PublishSubject
 
 
 /**
@@ -15,6 +16,9 @@ interface DataManager{
     fun getNews(country: String, page: Int):Flowable<List<News>>
 
     fun loadNewsFromApi(country: String, page: Int):Single<NewsListResponse>
+
+    fun publishSubject():PublishSubject<Boolean>
+
 
 
 }

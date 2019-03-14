@@ -4,10 +4,12 @@ import android.webkit.WebView
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.grab.news.R
 import com.grab.news.data.model.News
+import com.grab.news.ui.news.viewmodel.NewsListViewModel
 
 /**
  * Created by jyotidubey on 2019-03-11.
@@ -33,6 +35,12 @@ class BindingUtils {
                 .apply(RequestOptions().error(R.drawable.ic_newspaper))
                 .into(view)
 
+        }
+
+        @BindingAdapter("bind:onRefresh")
+        @JvmStatic
+        fun populateImage(view: SwipeRefreshLayout ,handler: SwipeRefreshLayout.OnRefreshListener) {
+            handler.onRefresh()
         }
     }
 }

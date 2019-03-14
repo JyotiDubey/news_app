@@ -16,7 +16,7 @@ import kotlinx.android.parcel.Parcelize
 data class NewsListResponse(
     @SerializedName("status") var status: String,
     @SerializedName("totalResults") var totalResults: String,
-    @SerializedName("articles") var news: List<News>? = null
+    @SerializedName("articles") var news: List<News>
 )
 
 @Parcelize

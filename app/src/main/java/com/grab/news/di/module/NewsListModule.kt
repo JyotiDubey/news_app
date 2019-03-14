@@ -10,7 +10,7 @@ import dagger.Provides
  * Created by jyotidubey on 2019-03-13.
  */
 @Module
-class NewsListModule(private val handler: NewsListViewModel.NewItemClickHandler){
+class NewsListModule(private val handler: NewsListViewModel.NewsListScreenActionHandler){
 
     @ActivityScope
     @Provides
