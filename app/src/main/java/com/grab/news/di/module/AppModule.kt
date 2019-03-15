@@ -64,9 +64,6 @@ class AppModule(val app:Application) {
     @Provides
     internal fun provideNewsDao(database: AppDatabase): NewsDao = database.newsDao()
 
-    @Provides
-    internal fun provideCompositeDisposable(): CompositeDisposable = CompositeDisposable()
-
     @Singleton
     @Provides
     internal fun provideVMProviderFactory(factory: ViewModelProviderFactory): ViewModelProvider.NewInstanceFactory = factory

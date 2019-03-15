@@ -8,8 +8,9 @@ import io.reactivex.disposables.CompositeDisposable
 /**
  * Created by jyotidubey on 2019-03-13.
  */
-open class BaseViewModel(private val disposable: CompositeDisposable) : ViewModel(){
+open class BaseViewModel : ViewModel(){
 
+    protected val disposable: CompositeDisposable = CompositeDisposable()
     private val shouldShowEmptyState: MutableLiveData<Boolean> = MutableLiveData()
     private val refreshState: MutableLiveData<Boolean> = MutableLiveData()
     private val progress: MutableLiveData<Boolean> = MutableLiveData()
