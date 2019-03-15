@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.grab.news.NewsApplication
 import com.grab.news.R
@@ -21,30 +22,18 @@ import com.grab.news.di.module.NewsListModule
 import com.grab.news.ui.news.viewmodel.NewsListViewModel
 import kotlinx.android.synthetic.main.activity_news_list.*
 import javax.inject.Inject
-import androidx.recyclerview.widget.RecyclerView
-
-
 
 
 class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenActionHandler,
     SwipeRefreshLayout.OnRefreshListener {
 
-
-    private val networkChangeReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val isDeviceOfflineState = if (manager.activeNetworkInfo == null)
-                true
-            else
-                !manager.activeNetworkInfo.isConnected
-            viewModel.onNetworkConnectivityChanged(isDeviceOfflineState)
-        }
-    }
-
     @Inject
     internal lateinit var factory: ViewModelProvider.NewInstanceFactory
     @Inject
     internal lateinit var adapter: NewsListAdapter
+    @Inject
+    internal lateinit var layoutManager: LinearLayoutManager
+
     private lateinit var viewModel: NewsListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,8 +48,8 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
         binding.retryButtonClickHandler = this
         binding.viewModel = viewModel
 
-
         setUpAdapter()
+        addNewsListDataUpdateObserver()
     }
 
     override fun onResume() {
@@ -89,28 +78,40 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
 
     private fun performDependencyInjections() {
         NewsApplication.get(this).getAppComponent()
-            .plus(NewsListModule(this)).inject(this)
+            .plus(NewsListModule(this, this)).inject(this)
     }
 
     private fun setUpAdapter() {
-        new_list.layoutManager = LinearLayoutManager(this)
-        new_list.adapter = adapter
-
-        new_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        newList.layoutManager = layoutManager
+        newList.adapter = adapter
+        newList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (!new_list.canScrollVertically(1)) {
+                if (!newList.canScrollVertically(1)) {
                     viewModel.onRequestLoadMore()
                 }
             }
         })
+    }
+
+    private fun addNewsListDataUpdateObserver() {
         viewModel.newsLiveData().observe(this, Observer {
             adapter.update(it)
         })
-
     }
 
     private fun obtainViewModel() = ViewModelProviders.of(this, factory).get(NewsListViewModel::class.java)
 
     private fun setUpBinding() =
         DataBindingUtil.setContentView<ActivityNewsListBinding>(this, R.layout.activity_news_list)
+
+    private val networkChangeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val isDeviceOfflineState = if (manager.activeNetworkInfo == null)
+                true
+            else
+                !manager.activeNetworkInfo.isConnected
+            viewModel.onNetworkConnectivityChanged(isDeviceOfflineState)
+        }
+    }
 }

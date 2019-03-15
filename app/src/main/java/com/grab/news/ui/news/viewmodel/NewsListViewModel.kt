@@ -32,9 +32,8 @@ class NewsListViewModel(disposable: CompositeDisposable, private val dataManager
 
 
     init {
-
-        createPaginator()
         fetchNewsFromLocal()
+        createPaginator()
         getNewsFromApiAndSyncDB(false)
     }
 
@@ -50,51 +49,53 @@ class NewsListViewModel(disposable: CompositeDisposable, private val dataManager
     }
 
     fun onRequestRefresh() {
-        pageNumber = 1
+        pageNumber = INITIAL_PAGE_NUMBER
         getNewsFromApiAndSyncDB(true)
     }
 
 
     private fun createPaginator() {
         pageNumberPublisher
-            .onBackpressureBuffer()
-            .distinctUntilChanged()
-            .subscribe { loadNews(it) }
+            .onBackpressureDrop()
+            .subscribe {
+                loadNews(it)
+            }
 
     }
 
     private fun fetchNewsFromLocal() {
-        showProgress(false)
         dataManager.loadNewsFromRepository()
+            .doOnSubscribe { showProgress(false) }
             .filter { it.isNotEmpty() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                hideProgress(false)
                 newsLiveData.value = it
+                hideProgress(false)
             }
     }
 
     private fun getNewsFromApiAndSyncDB(refresh: Boolean) {
         showProgress(refresh)
         dataManager.loadNewsFromServer(INITIAL_PAGE_NUMBER)
+            .doOnSubscribe { showProgress(refresh) }
             .flatMapCompletable {
-                shouldShowEmptyState.postValue(it.news.isEmpty())
+                setEmptyState(it.news.isEmpty())
                 dataManager.invalidateAndInsertIntoRepository(it.news)
             }
+            .doOnComplete{ hideProgress(refresh) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                hideProgress(refresh)
                 pageNumber++
             }, {
-                hideProgress(refresh)
-                this.shouldShowEmptyState.value = newsLiveData.value == null
+                setEmptyState(newsLiveData.value == null || newsLiveData?.value?.isEmpty()!!)
             })
     }
 
     private fun loadNews(page: Int) {
         dataManager.loadNewsFromServer(page)
+            .doOnSubscribe { showProgress(false) }
             .filter { !it.news.isEmpty() }
             .flatMapCompletable {
                 pageNumber++
@@ -104,11 +105,12 @@ class NewsListViewModel(disposable: CompositeDisposable, private val dataManager
                     dataManager.insertIntoRepository(it.news)
                 }
             }
+            .doOnComplete{ hideProgress(false) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
             }, {
-                this.shouldShowEmptyState.value = newsLiveData.value == null
+                setEmptyState(newsLiveData.value == null || newsLiveData?.value?.isEmpty()!!)
             })
 
 

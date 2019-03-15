@@ -10,9 +10,9 @@ import io.reactivex.disposables.CompositeDisposable
  */
 open class BaseViewModel(private val disposable: CompositeDisposable) : ViewModel(){
 
-    protected val refreshState: MutableLiveData<Boolean> = MutableLiveData()
-    protected val progress: MutableLiveData<Boolean> = MutableLiveData()
-    protected val shouldShowEmptyState: MutableLiveData<Boolean> = MutableLiveData()
+    private val shouldShowEmptyState: MutableLiveData<Boolean> = MutableLiveData()
+    private val refreshState: MutableLiveData<Boolean> = MutableLiveData()
+    private val progress: MutableLiveData<Boolean> = MutableLiveData()
     private val isDeviceOfflineState: MutableLiveData<Boolean> = MutableLiveData()
 
     fun emptyStateLiveData() = shouldShowEmptyState as LiveData<Boolean>
@@ -27,17 +27,21 @@ open class BaseViewModel(private val disposable: CompositeDisposable) : ViewMode
 
     fun showProgress(refresh:Boolean){
         if (refresh) {
-            refreshState.value = true
+            refreshState.postValue( true)
         } else {
-            progress.value = true
+            progress.postValue(true)
         }
+    }
+
+    fun setEmptyState(empty:Boolean) {
+        shouldShowEmptyState.postValue(empty)
     }
 
     fun hideProgress(refresh:Boolean){
         if (refresh) {
-            refreshState.value = false
+            refreshState.postValue(false)
         } else {
-            progress.value = false
+            progress.postValue(false)
         }
     }
 

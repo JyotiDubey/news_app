@@ -29,7 +29,7 @@
                                                                bind:onRefresh="@{swipeToRefreshHandler}"
                                                                bind:refreshing="@{viewModel.refreshLiveData()}">
 
-            <androidx.recyclerview.widget.RecyclerView android:id="@+id/new_list"
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/newList"
                                                        android:layout_width="match_parent"
                                                        android:layout_height="match_parent"/>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

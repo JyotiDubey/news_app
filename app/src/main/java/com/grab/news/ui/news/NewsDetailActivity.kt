@@ -47,7 +47,6 @@ class NewsDetailActivity : AppCompatActivity() {
 
         viewModel = obtainViewModel()
 
-
         val binding = setUpBinding()
 
         binding.news = intent.extras.getParcelable(EXTRA_NEWS) as News
@@ -64,13 +63,13 @@ class NewsDetailActivity : AppCompatActivity() {
         webView.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(webView, url)
-                viewModel.hideProgress()
+                viewModel.hideProgress(false)
 
             }
 
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
-                viewModel.showProgress()
+                viewModel.showProgress(false)
 
             }
 
