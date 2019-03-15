@@ -24,7 +24,7 @@ import javax.inject.Singleton
  * Created by jyotidubey on 2019-03-13.
  */
 @Module
-class AppModule(val app:Application) {
+class AppModule(val app: Application) {
 
     @Singleton
     @Provides
@@ -48,11 +48,9 @@ class AppModule(val app:Application) {
 
     @Singleton
     @Provides
-    internal fun provideAppDatabase(context: Context, @DatabaseInfo name:String): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            name)
+    internal fun provideAppDatabase(context: Context, @DatabaseInfo name: String): AppDatabase {
+        return Room.databaseBuilder(context, AppDatabase::class.java, name)
+            .fallbackToDestructiveMigration()
             .build()
     }
 
@@ -66,6 +64,7 @@ class AppModule(val app:Application) {
 
     @Singleton
     @Provides
-    internal fun provideVMProviderFactory(factory: ViewModelProviderFactory): ViewModelProvider.NewInstanceFactory = factory
+    internal fun provideVMProviderFactory(factory: ViewModelProviderFactory): ViewModelProvider.NewInstanceFactory =
+        factory
 
 }

@@ -21,7 +21,4 @@ class NewsListModule(private val handler: NewsListViewModel.NewsListScreenAction
     @ActivityScope
     @Provides
     internal fun provideLinearLayoutManager() = LinearLayoutManager(activityContext)
-
-
-
 }

@@ -5,24 +5,17 @@ import com.grab.news.data.model.NewsListResponse
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.subjects.PublishSubject
 
 
 /**
  * Created by jyotidubey on 2019-03-09.
  */
-interface DataManager{
 
-    fun loadNewsFromServer(page: Int):Completable
+interface DataManager {
 
-    fun loadNewsFromRepository():Flowable<List<News>>
+    fun loadNewsFromServer(page: Int): Single<NewsListResponse>
 
-    fun insertIntoRepository(news: List<News>) : Completable
+    fun loadNewsFromRepository(): Flowable<List<News>>
 
-    fun invalidateAndInsertIntoRepository(news: List<News>) : Completable
-
-
-
-
-
+    fun updateRepository(page: Int, news:List<News>): Completable
 }

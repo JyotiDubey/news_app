@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -13,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.grab.news.NewsApplication
 import com.grab.news.R
@@ -84,7 +86,9 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
     private fun setUpAdapter() {
         newList.layoutManager = layoutManager
         newList.adapter = adapter
+        (newList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         newList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (!newList.canScrollVertically(1)) {
                     viewModel.onRequestLoadMore()
@@ -94,8 +98,8 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
     }
 
     private fun addNewsListDataUpdateObserver() {
-        viewModel.newsLiveData().observe(this, Observer {
-            adapter.update(it)
+        viewModel.newsLiveData().observe(this, Observer { news ->
+            adapter.submitList(news)
         })
     }
 

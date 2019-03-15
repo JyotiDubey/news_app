@@ -13,5 +13,4 @@ interface DBHelper{
     fun insertIntoRepository(news: List<News>): Completable
 
     fun invalidateAndInsertIntoRepository(news: List<News>) : Completable
-
 }
