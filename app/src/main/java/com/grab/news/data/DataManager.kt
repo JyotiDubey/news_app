@@ -13,11 +13,15 @@ import io.reactivex.subjects.PublishSubject
  */
 interface DataManager{
 
-    fun getNews(country: String, page: Int):Flowable<List<News>>
+    fun loadNewsFromServer(page: Int):Single<NewsListResponse>
 
-    fun loadNewsFromApi(country: String, page: Int):Single<NewsListResponse>
+    fun loadNewsFromRepository():Flowable<List<News>>
 
-    fun publishSubject():PublishSubject<Boolean>
+    fun insertIntoRepository(news: List<News>) : Completable
+
+    fun invalidateAndInsertIntoRepository(news: List<News>) : Completable
+
+
 
 
 

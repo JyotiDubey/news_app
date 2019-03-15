@@ -4,18 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.grab.news.NewsApplication
 import com.grab.news.R
-import com.grab.news.SystemUtils
 import com.grab.news.data.model.News
 import com.grab.news.databinding.ActivityNewsDetailBinding
 import com.grab.news.ui.news.viewmodel.NewsDetailViewModel
@@ -56,12 +52,11 @@ class NewsDetailActivity : AppCompatActivity() {
 
         binding.news = intent.extras.getParcelable(EXTRA_NEWS) as News
 
+        binding.lifecycleOwner = this
+
         binding.viewModel = viewModel
 
         setupWebView()
-
-        addLiveDataObservers()
-
 
     }
 
@@ -80,6 +75,7 @@ class NewsDetailActivity : AppCompatActivity() {
             }
 
         }
+
     }
 
     private fun setUpBinding() =
@@ -91,9 +87,4 @@ class NewsDetailActivity : AppCompatActivity() {
         NewsApplication.get(this).getAppComponent().inject(this)
     }
 
-    private fun addLiveDataObservers() {
-        viewModel.getProgressLiveData().observe(this, Observer {
-            viewModel.updateProgress(it)
-        })
-    }
 }

@@ -20,7 +20,7 @@ abstract class NewsDao {
     abstract fun deleteAll()
 
     @Transaction
-   open fun cleanAndInsert(news: List<News>) {
+   open fun clearAndInsert(news: List<News>) {
         deleteAll()
         insertAll(news)
     }

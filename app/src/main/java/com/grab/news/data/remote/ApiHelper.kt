@@ -7,5 +7,5 @@ import io.reactivex.Single
  * Created by jyotidubey on 2019-03-09.
  */
 interface ApiHelper{
-    fun fetchHeadlinesFromServer(country: String, page: Int): Single<NewsListResponse>
+    fun loadNews(page: Int): Single<NewsListResponse>
 }

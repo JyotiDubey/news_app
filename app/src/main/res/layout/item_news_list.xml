@@ -32,7 +32,7 @@
                                                              android:layout_weight="2"
                                                              android:maxLines="3"
                                                              android:ellipsize="end"
-                                                             style="@style/TextAppearance.AppCompat.Title"
+                                                             style="@style/TextAppearance.AppCompat.Subhead"
                                                              android:text="@{news.title}"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
             <androidx.appcompat.widget.AppCompatTextView android:layout_width="match_parent"

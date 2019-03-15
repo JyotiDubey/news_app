@@ -2,20 +2,19 @@ package com.grab.news.ui.news
 
 import android.webkit.WebView
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.grab.news.R
 import com.grab.news.data.model.News
-import com.grab.news.ui.news.viewmodel.NewsListViewModel
 
 /**
  * Created by jyotidubey on 2019-03-11.
  */
 class BindingUtils {
     companion object {
+
         @BindingAdapter("bind:webViewContent")
         @JvmStatic
         fun populateWebview(view: WebView, webViewContent: News) {
@@ -39,8 +38,8 @@ class BindingUtils {
 
         @BindingAdapter("bind:onRefresh")
         @JvmStatic
-        fun populateImage(view: SwipeRefreshLayout ,handler: SwipeRefreshLayout.OnRefreshListener) {
-            handler.onRefresh()
+        fun onSwipeToRefresh(view: SwipeRefreshLayout ,handler: SwipeRefreshLayout.OnRefreshListener) {
+            view.setOnRefreshListener(handler)
         }
     }
 }

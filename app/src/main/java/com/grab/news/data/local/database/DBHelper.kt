@@ -8,8 +8,10 @@ import io.reactivex.Flowable
  * Created by jyotidubey on 2019-03-12.
  */
 interface DBHelper{
-    fun getNews(): Flowable<List<News>>
+    fun getNewsFromRepository(): Flowable<List<News>>
 
-    fun updateNews(news: List<News>): Completable
+    fun insertIntoRepository(news: List<News>): Completable
+
+    fun invalidateAndInsertIntoRepository(news: List<News>) : Completable
 
 }

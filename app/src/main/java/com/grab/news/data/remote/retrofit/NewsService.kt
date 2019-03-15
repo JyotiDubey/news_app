@@ -11,9 +11,9 @@ import retrofit2.http.Query
  */
 interface NewsService{
     @GET("/v2/top-headlines")
-    fun getTopHeadlines(
-        @Query("country") country: String,
+    fun loadNews(
         @Query("page") page: Int,
+        @Query("country") country: String = "us",
         @Query("apiKey") api_key: String = BuildConfig.ApiKey
     ): Single<NewsListResponse>
 

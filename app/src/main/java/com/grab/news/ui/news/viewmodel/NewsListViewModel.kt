@@ -7,8 +7,8 @@ import com.grab.news.data.DataManager
 import com.grab.news.data.model.News
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.processors.PublishProcessor
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by jyotidubey on 2019-03-09.
@@ -16,50 +16,103 @@ import java.util.concurrent.TimeUnit
 class NewsListViewModel(disposable: CompositeDisposable, private val dataManager: DataManager) :
     BaseViewModel(disposable) {
 
+    companion object {
+        private const val INITIAL_PAGE_NUMBER = 1
+    }
+
     interface NewsListScreenActionHandler {
         fun onNewsItemClicked(news: News)
         fun onRetryButtonClicked()
 
     }
 
-    private val newsLiveData: MutableLiveData<MutableList<News>> = MutableLiveData()
-    private val progress: MutableLiveData<Boolean> = MutableLiveData()
-    private val shouldShowEmptyState: MutableLiveData<Boolean> = MutableLiveData()
-    private val networkConnectivityLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private var pageNumber = 1
+    private val pageNumberPublisher = PublishProcessor.create<Int>()
+    private val newsLiveData: MutableLiveData<List<News>> = MutableLiveData()
 
 
     init {
-        fetchNews()
+
+        createPaginator()
+        fetchNewsFromLocal()
+        getNewsFromApiAndSyncDB(false)
+    }
+
+    fun newsLiveData() = newsLiveData as LiveData<List<News>>
+
+
+    fun onRequestRetry() {
+        getNewsFromApiAndSyncDB(false)
+    }
+
+    fun onRequestLoadMore() {
+        pageNumberPublisher.onNext(pageNumber)
+    }
+
+    fun onRequestRefresh() {
+        pageNumber = 1
+        getNewsFromApiAndSyncDB(true)
     }
 
 
-    fun getNewsLiveData() = newsLiveData as LiveData<List<News>>
-    fun getProgressLiveData() = progress as LiveData<Boolean>
-    fun getShouldShowEmptyStateLiveData() = shouldShowEmptyState as LiveData<Boolean>
-    fun getIsNetworkConnectedStateLiveData() = networkConnectivityLiveData as LiveData<Boolean>
-
-    fun updateNetworkConnectivity(isNetworkConnected: Boolean) {
-        this.networkConnectivityLiveData.value = isNetworkConnected
-    }
-    fun onRetryClick(){
-        fetchNews()
-    }
-
-    private fun fetchNews() {
-        progress.value = true
-        disposable.add(
-            dataManager.getNews("us", 1)
-                .delay(1, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    progress.value = false
-                    shouldShowEmptyState.value = it.isEmpty()
-                    newsLiveData.value = it as MutableList<News>
-                }, {
-                })
-        )
+    private fun createPaginator() {
+        pageNumberPublisher
+            .onBackpressureBuffer()
+            .distinctUntilChanged()
+            .subscribe { loadNews(it) }
 
     }
+
+    private fun fetchNewsFromLocal() {
+        showProgress(false)
+        dataManager.loadNewsFromRepository()
+            .filter { it.isNotEmpty() }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                hideProgress(false)
+                newsLiveData.value = it
+            }
+    }
+
+    private fun getNewsFromApiAndSyncDB(refresh: Boolean) {
+        showProgress(refresh)
+        dataManager.loadNewsFromServer(INITIAL_PAGE_NUMBER)
+            .flatMapCompletable {
+                shouldShowEmptyState.postValue(it.news.isEmpty())
+                dataManager.invalidateAndInsertIntoRepository(it.news)
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                hideProgress(refresh)
+                pageNumber++
+            }, {
+                hideProgress(refresh)
+                this.shouldShowEmptyState.value = newsLiveData.value == null
+            })
+    }
+
+    private fun loadNews(page: Int) {
+        dataManager.loadNewsFromServer(page)
+            .filter { !it.news.isEmpty() }
+            .flatMapCompletable {
+                pageNumber++
+                if (page == INITIAL_PAGE_NUMBER) {
+                    dataManager.invalidateAndInsertIntoRepository(it.news)
+                } else {
+                    dataManager.insertIntoRepository(it.news)
+                }
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+            }, {
+                this.shouldShowEmptyState.value = newsLiveData.value == null
+            })
+
+
+    }
+
 
 }

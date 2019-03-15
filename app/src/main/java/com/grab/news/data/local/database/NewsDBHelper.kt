@@ -12,11 +12,17 @@ import javax.inject.Inject
  */
 class NewsDBHelper @Inject constructor(private val newsDao :NewsDao) : DBHelper {
 
-    override fun getNews() = newsDao.loadAll()
+    override fun getNewsFromRepository() = newsDao.loadAll()
 
-    override fun updateNews(news: List<News>) = Completable.create{
-        newsDao.cleanAndInsert(news)
+    override fun insertIntoRepository(news: List<News>) = Completable.create{
+        newsDao.insertAll(news)
         it.onComplete()
     }
+
+    override fun invalidateAndInsertIntoRepository(news: List<News>)= Completable.create{
+        newsDao.clearAndInsert(news)
+        it.onComplete()
+    }
+
 
 }

@@ -1,29 +1,46 @@
 package com.grab.news.ui.news.viewmodel
 
-import androidx.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Created by jyotidubey on 2019-03-13.
  */
-open class BaseViewModel(protected val disposable: CompositeDisposable) : ViewModel(){
+open class BaseViewModel(private val disposable: CompositeDisposable) : ViewModel(){
 
-    var loadingState = ObservableField(true)
-    var emptyViewState = ObservableField(false)
-    var isDeviceOnline = ObservableField(false)
+    protected val refreshState: MutableLiveData<Boolean> = MutableLiveData()
+    protected val progress: MutableLiveData<Boolean> = MutableLiveData()
+    protected val shouldShowEmptyState: MutableLiveData<Boolean> = MutableLiveData()
+    private val isDeviceOfflineState: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun updateProgress(loading: Boolean){
-        loadingState.set(loading)
+    fun emptyStateLiveData() = shouldShowEmptyState as LiveData<Boolean>
+    fun isDeviceOfflineStateLiveData() = isDeviceOfflineState as LiveData<Boolean>
+    fun progressLiveData() = progress as LiveData<Boolean>
+    fun refreshLiveData() = refreshState as LiveData<Boolean>
+
+
+    fun onNetworkConnectivityChanged(deviceNetworkState: Boolean) {
+        isDeviceOfflineState.value = deviceNetworkState
     }
 
-    fun updateEmptyView(shouldShowEmptyView: Boolean){
-        emptyViewState.set(shouldShowEmptyView)
+    fun showProgress(refresh:Boolean){
+        if (refresh) {
+            refreshState.value = true
+        } else {
+            progress.value = true
+        }
     }
 
-    fun updateNetworkConnectivityView(isNetworkConnected: Boolean){
-        isDeviceOnline.set(isNetworkConnected)
+    fun hideProgress(refresh:Boolean){
+        if (refresh) {
+            refreshState.value = false
+        } else {
+            progress.value = false
+        }
     }
+
     override fun onCleared() {
         disposable.dispose()
         super.onCleared()

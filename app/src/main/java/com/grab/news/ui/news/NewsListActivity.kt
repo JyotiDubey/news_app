@@ -21,6 +21,9 @@ import com.grab.news.di.module.NewsListModule
 import com.grab.news.ui.news.viewmodel.NewsListViewModel
 import kotlinx.android.synthetic.main.activity_news_list.*
 import javax.inject.Inject
+import androidx.recyclerview.widget.RecyclerView
+
+
 
 
 class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenActionHandler,
@@ -30,11 +33,11 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
     private val networkChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val isDeviceConnectedToInternet = if (manager.activeNetworkInfo == null)
-                false
+            val isDeviceOfflineState = if (manager.activeNetworkInfo == null)
+                true
             else
-                manager.activeNetworkInfo.isConnected
-            viewModel.updateNetworkConnectivity(isDeviceConnectedToInternet)
+                !manager.activeNetworkInfo.isConnected
+            viewModel.onNetworkConnectivityChanged(isDeviceOfflineState)
         }
     }
 
@@ -50,19 +53,14 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
         performDependencyInjections()
 
         viewModel = obtainViewModel()
-
         val binding = setUpBinding()
-
-        binding.viewModel = viewModel
-
+        binding.lifecycleOwner = this
         binding.swipeToRefreshHandler = this
-
         binding.retryButtonClickHandler = this
+        binding.viewModel = viewModel
 
 
         setUpAdapter()
-
-        addLiveDataObservers()
     }
 
     override fun onResume() {
@@ -82,11 +80,11 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
     }
 
     override fun onRetryButtonClicked() {
-        viewModel.onRetryClick()
+        viewModel.onRequestRetry()
     }
 
     override fun onRefresh() {
-
+        viewModel.onRequestRefresh()
     }
 
     private fun performDependencyInjections() {
@@ -97,25 +95,17 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
     private fun setUpAdapter() {
         new_list.layoutManager = LinearLayoutManager(this)
         new_list.adapter = adapter
-    }
 
-    private fun addLiveDataObservers() {
-        viewModel.getNewsLiveData().observe(this, Observer {
+        new_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (!new_list.canScrollVertically(1)) {
+                    viewModel.onRequestLoadMore()
+                }
+            }
+        })
+        viewModel.newsLiveData().observe(this, Observer {
             adapter.update(it)
         })
-
-        viewModel.getProgressLiveData().observe(this, Observer {
-            viewModel.updateProgress(it)
-        })
-
-        viewModel.getShouldShowEmptyStateLiveData().observe(this, Observer {
-            viewModel.updateEmptyView(it)
-        })
-
-        viewModel.getIsNetworkConnectedStateLiveData().observe(this, Observer {
-            viewModel.updateNetworkConnectivityView(it)
-        })
-
 
     }
 
