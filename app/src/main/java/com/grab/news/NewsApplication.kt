@@ -10,24 +10,19 @@ import com.grab.news.di.module.RetrofitModule
 /**
  * Created by jyotidubey on 2019-03-13.
  */
-class NewsApplication:Application(){
-    private lateinit var appComponent: AppComponent
+open class NewsApplication:Application(){
+
+    open val appComponent: AppComponent by lazy {
+        DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .retrofitModule(RetrofitModule(this))
+            .build()
+    }
     companion object {
         fun get(context: Context): NewsApplication {
             return context.applicationContext as NewsApplication
         }
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        appComponent = DaggerAppComponent.builder()
-            .appModule(AppModule(this))
-            .retrofitModule(RetrofitModule(this))
-            .build()
-    }
-
-    fun getAppComponent(): AppComponent {
-        return appComponent
-    }
 
 }

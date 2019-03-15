@@ -1,6 +1,7 @@
-package com.grab.news
+package com.grab.news.di
 
 import com.grab.news.data.DataManager
+import com.grab.news.mocks.MockDataManager
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

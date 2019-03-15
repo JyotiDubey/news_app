@@ -83,7 +83,7 @@ class NewsDetailActivity : AppCompatActivity() {
     private fun obtainViewModel() = ViewModelProviders.of(this, factory).get(NewsDetailViewModel::class.java)
 
     private fun performDependencyInjections() {
-        NewsApplication.get(this).getAppComponent().inject(this)
+        NewsApplication.get(this).appComponent.inject(this)
     }
 
 }

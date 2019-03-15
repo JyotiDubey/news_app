@@ -1,10 +1,16 @@
 package com.grab.news
 
-import android.app.Application
+import com.grab.news.di.component.AppComponent
 
-/**
- * Created by jyotidubey on 2019-03-15.
- */
-class NewsTestApplication : Application(){
+
+
+class NewsTestApplication : NewsApplication() {
+
+    override val appComponent: AppComponent by lazy {
+        DaggerTestComponent
+                .builder()
+                .application(this)
+                .build()
+    }
 
 }

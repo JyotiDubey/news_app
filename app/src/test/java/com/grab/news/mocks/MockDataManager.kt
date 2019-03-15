@@ -1,4 +1,4 @@
-package com.grab.news
+package com.grab.news.mocks
 
 import com.grab.news.data.DataManager
 import com.grab.news.data.model.News
@@ -19,12 +19,9 @@ class MockDataManager : DataManager{
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun insertIntoRepository(news: List<News>): Completable {
+    override fun updateRepository(page: Int, news: List<News>): Completable {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun invalidateAndInsertIntoRepository(news: List<News>): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
 }

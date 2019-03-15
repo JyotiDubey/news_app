@@ -14,6 +14,8 @@ import com.grab.news.data.local.database.NewsDao
 import com.grab.news.data.remote.ApiHelper
 import com.grab.news.data.remote.NewsApiHelper
 import com.grab.news.di.DatabaseInfo
+import com.grab.news.scheduler.AppSchedulerProvider
+import com.grab.news.scheduler.SchedulerProvider
 import com.grab.news.ui.news.ViewModelProviderFactory
 import dagger.Module
 import dagger.Provides
@@ -66,5 +68,9 @@ class AppModule(val app: Application) {
     @Provides
     internal fun provideVMProviderFactory(factory: ViewModelProviderFactory): ViewModelProvider.NewInstanceFactory =
         factory
+
+    @Singleton
+    @Provides
+    internal fun provideAppScheduler(schedulerProvider: AppSchedulerProvider): SchedulerProvider = schedulerProvider
 
 }

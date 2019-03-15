@@ -6,6 +6,7 @@ import com.grab.news.data.DataManager
 import com.grab.news.data.NewsDataManager
 import com.grab.news.ui.news.viewmodel.NewsListViewModel
 import io.reactivex.disposables.CompositeDisposable
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -13,40 +14,23 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import javax.inject.Inject
 
 /**
  * Created by jyotidubey on 2019-03-15.
  */
-class NewsListViewModelTest {
+class NewsListViewModelTest : NewsRobolectricTestSuite() {
 
-    @get:Rule
-    val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-    @get:Rule
-    val taskExecutorRule = InstantTaskExecutorRule()
-
-    @get:Rule
-    val rxSchedulerRule = RxScheduleRule()
-
-    private var mockManager =  NewsDataManager()
-
-    private var mockdisposible: CompositeDisposable = CompositeDisposable()
-
-    private lateinit var viewModel: NewsListViewModel
+    @Inject
+    lateinit var newsListViewModel: NewsListViewModel
 
     @Before
-    fun setupNewsViewModel() {
-        MockitoAnnotations.initMocks(this)
-        viewModel = NewsListViewModel(mockdisposible, mockManager)
+    fun setUp() {
+        testAppComponent.inject(this)
     }
 
     @Test
-    fun `init set news list to empty`() {
-        val news = viewModel.newsLiveData().testObserver()
-
-        Truth.assert_()
-            .that(news.observedValues).isEmpty()
+    fun assertInjected() {
+        Assert.assertTrue(::newsListViewModel.isInitialized)
     }
-
-
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.grab.news.data.DataManager
 import com.grab.news.data.model.News
+import com.grab.news.scheduler.SchedulerProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.exceptions.Exceptions
 import io.reactivex.processors.PublishProcessor
@@ -13,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Created by jyotidubey on 2019-03-09.
  */
-class NewsListViewModel(private val dataManager: DataManager) : BaseViewModel() {
+class NewsListViewModel(private val schedulerProvider: SchedulerProvider,private val dataManager: DataManager) : BaseViewModel() {
 
     companion object {
         private const val INITIAL_PAGE_NUMBER = 1
@@ -93,8 +94,7 @@ class NewsListViewModel(private val dataManager: DataManager) : BaseViewModel() 
     private fun fetchNewsFromLocal() {
         showProgress(false)
         dataManager.loadNewsFromRepository()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .compose(schedulerProvider.ioToUiFlowableSchedulers())
             .subscribe {
                 setEmptyState(it.isEmpty())
                 newsLiveData.value = it
