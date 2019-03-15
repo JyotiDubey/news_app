@@ -33,14 +33,15 @@ class NewsListViewModel(private val dataManager: DataManager) : BaseViewModel() 
     init {
         fetchNewsFromLocal()
         createPaginator()
-        getNewsFromApiAndSyncDB(false)
+        onRequestLoadMore()
     }
 
     fun newsLiveData() = newsLiveData as LiveData<List<News>>
 
 
     fun onRequestRetry() {
-        getNewsFromApiAndSyncDB(false)
+        pageNumber = INITIAL_PAGE_NUMBER
+        onRequestLoadMore()
     }
 
     fun onRequestLoadMore() {
@@ -49,72 +50,38 @@ class NewsListViewModel(private val dataManager: DataManager) : BaseViewModel() 
 
     fun onRequestRefresh() {
         pageNumber = INITIAL_PAGE_NUMBER
-        getNewsFromApiAndSyncDB(true)
+        onRequestLoadMore()
     }
 
 
     private fun createPaginator() {
         pageNumberPublisher
-            .onBackpressureDrop()
-            .subscribe {
-                loadNews(it)
+            .observeOn(Schedulers.computation())
+            .concatMapCompletable {
+                showProgress(false)
+                return@concatMapCompletable dataManager.loadNewsFromServer(it).subscribeOn(Schedulers.io())
             }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                hideProgress(false)
+                pageNumber++
+            }, {
+                hideProgress(false)
+                setEmptyState(newsLiveData.value == null || newsLiveData?.value?.isEmpty()!!)
+            })
+
 
     }
 
     private fun fetchNewsFromLocal() {
-        showProgress(false)
         disposable.add(dataManager.loadNewsFromRepository()
-            .filter { it.isNotEmpty() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 newsLiveData.value = it
-                hideProgress(false)
             })
     }
 
-    private fun getNewsFromApiAndSyncDB(refresh: Boolean) {
-        showProgress(refresh)
-        disposable.add(dataManager.loadNewsFromServer(INITIAL_PAGE_NUMBER)
-            .flatMapCompletable {
-                setEmptyState(it.news.isEmpty())
-                dataManager.invalidateAndInsertIntoRepository(it.news)
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                pageNumber++
-                hideProgress(refresh)
-            }, {
-                hideProgress(refresh)
-                setEmptyState(newsLiveData.value == null || newsLiveData?.value?.isEmpty()!!)
-            }))
-    }
-
-    private fun loadNews(page: Int) {
-        showProgress(false)
-        disposable.add(dataManager.loadNewsFromServer(page)
-            .filter { !it.news.isEmpty() }
-            .flatMapCompletable {
-                pageNumber++
-                if (page == INITIAL_PAGE_NUMBER) {
-                    dataManager.invalidateAndInsertIntoRepository(it.news)
-                } else {
-                    dataManager.insertIntoRepository(it.news)
-                }
-            }
-            .doOnComplete{ hideProgress(false) }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-            }, {
-                hideProgress(false)
-                setEmptyState(newsLiveData.value == null || newsLiveData?.value?.isEmpty()!!)
-            }))
-
-
-    }
 
 
 }

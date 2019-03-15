@@ -13,7 +13,7 @@ import io.reactivex.subjects.PublishSubject
  */
 interface DataManager{
 
-    fun loadNewsFromServer(page: Int):Single<NewsListResponse>
+    fun loadNewsFromServer(page: Int):Completable
 
     fun loadNewsFromRepository():Flowable<List<News>>
 
