@@ -5,6 +5,7 @@ import android.content.Context
 import com.grab.news.di.component.AppComponent
 import com.grab.news.di.component.DaggerAppComponent
 import com.grab.news.di.module.AppModule
+import com.grab.news.di.module.RetrofitModule
 
 /**
  * Created by jyotidubey on 2019-03-13.
@@ -20,7 +21,9 @@ class NewsApplication:Application(){
     override fun onCreate() {
         super.onCreate()
         appComponent = DaggerAppComponent.builder()
-            .appModule(AppModule(this)).build()
+            .appModule(AppModule(this))
+            .retrofitModule(RetrofitModule(this))
+            .build()
     }
 
     fun getAppComponent(): AppComponent {

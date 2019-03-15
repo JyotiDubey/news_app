@@ -2,6 +2,7 @@ package com.grab.news.di.component
 
 import com.grab.news.di.module.AppModule
 import com.grab.news.di.module.NewsListModule
+import com.grab.news.di.module.RetrofitModule
 import com.grab.news.di.scope.ActivityScope
 import com.grab.news.ui.news.NewsDetailActivity
 import com.grab.news.ui.news.NewsListActivity
@@ -13,7 +14,7 @@ import javax.inject.Singleton
  * Created by jyotidubey on 2019-03-13.
  */
 @Singleton
-@Component(modules = [AppModule::class])
+@Component(modules = [AppModule::class, RetrofitModule::class])
 interface AppComponent{
 
     fun plus(module: NewsListModule): NewsListComponent

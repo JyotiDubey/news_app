@@ -13,6 +13,7 @@ import com.grab.news.data.local.database.NewsDBHelper
 import com.grab.news.data.local.database.NewsDao
 import com.grab.news.data.remote.ApiHelper
 import com.grab.news.data.remote.NewsApiHelper
+import com.grab.news.di.DatabaseInfo
 import com.grab.news.ui.news.ViewModelProviderFactory
 import dagger.Module
 import dagger.Provides
@@ -41,13 +42,17 @@ class AppModule(val app:Application) {
     @Provides
     internal fun provideApiHelper(apiHelper: NewsApiHelper): ApiHelper = apiHelper
 
+    @Provides
+    @DatabaseInfo
+    internal fun provideDatabaseName() = APP_DATABASE_NAME
+
     @Singleton
     @Provides
-    internal fun provideAppDatabase(context: Context): AppDatabase {
+    internal fun provideAppDatabase(context: Context, @DatabaseInfo name:String): AppDatabase {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            APP_DATABASE_NAME)
+            name)
             .build()
     }
 
