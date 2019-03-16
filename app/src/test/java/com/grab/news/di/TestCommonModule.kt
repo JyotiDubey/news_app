@@ -39,24 +39,13 @@ class TestCommonModule {
 }
 
 object MockDataManager : DataManager {
-    override fun loadNewsFromServer(page: Int): Single<NewsListResponse> {
-        val news : MutableList<News> = mutableListOf()
-        news.add(News("","","","","",""))
-        news.add(News("","","","","",""))
-        news.add(News("","","","","",""))
-        val newsListResponse  =  NewsListResponse("","", news)
-        return Single.just(newsListResponse).delay(5,TimeUnit.SECONDS)
+    override fun loadNewsFromServer(page: Int): Single<Result<Int>> {
+        return Single.just(Result.success(1)).delay(5,TimeUnit.SECONDS)
     }
 
     override fun loadNewsFromRepository(): Flowable<List<News>> {
         return Flowable.just(mutableListOf())
     }
-
-    override fun updateRepository(page: Int, news: List<News>): Completable {
-        return Completable.complete()
-    }
-
-
 }
 
 class MockViewModelProviderFactory @Inject constructor(

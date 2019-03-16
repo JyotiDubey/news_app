@@ -13,9 +13,8 @@ import io.reactivex.Single
 
 interface DataManager {
 
-    fun loadNewsFromServer(page: Int): Single<NewsListResponse>
+    fun loadNewsFromServer(page: Int): Single<Result<Int>>
 
     fun loadNewsFromRepository(): Flowable<List<News>>
 
-    fun updateRepository(page: Int, news:List<News>): Completable
 }
