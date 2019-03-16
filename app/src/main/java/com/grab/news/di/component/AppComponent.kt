@@ -20,17 +20,11 @@ interface AppComponent{
 
     fun plus(module: NewsListModule): NewsListComponent
 
-    fun plus() : NewsDetailComponent
+    fun inject(activity: NewsDetailActivity)
 
     @ActivityScope
     @Subcomponent(modules = [NewsListModule::class])
     interface NewsListComponent{
         fun inject(activity: NewsListActivity)
-    }
-
-    @ActivityScope
-    @Subcomponent
-    interface NewsDetailComponent{
-        fun inject(activity: NewsDetailActivity)
     }
 }
