@@ -14,10 +14,10 @@ import javax.inject.Singleton
 class TestSchedulerModule {
     @Provides
     @Singleton
-    fun schedulerProvider(): SchedulerProvider = TestSchedulerProvider
+    fun schedulerProvider(): SchedulerProvider = MockSchedulerProvider
 }
 
-object TestSchedulerProvider : SchedulerProvider {
+object MockSchedulerProvider : SchedulerProvider {
     override val ui: Scheduler get() = Schedulers.trampoline()
     override val single: Scheduler get() = Schedulers.trampoline()
     override val io: Scheduler get() = Schedulers.trampoline()

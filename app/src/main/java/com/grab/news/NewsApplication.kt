@@ -12,17 +12,27 @@ import com.grab.news.di.module.RetrofitModule
  */
 open class NewsApplication:Application(){
 
-    open val appComponent: AppComponent by lazy {
-        DaggerAppComponent.builder()
-            .appModule(AppModule(this))
-            .retrofitModule(RetrofitModule(this))
-            .build()
-    }
+    private lateinit var appComponent: AppComponent
+
     companion object {
         fun get(context: Context): NewsApplication {
             return context.applicationContext as NewsApplication
         }
     }
+    override fun onCreate() {
+        super.onCreate()
+        appComponent = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .retrofitModule(RetrofitModule(this))
+            .build()
+    }
+
+    fun getAppComponent(): AppComponent {
+        return appComponent
+    }
+
+
+
 
 
 }

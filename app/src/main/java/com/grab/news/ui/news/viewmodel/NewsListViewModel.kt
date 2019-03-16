@@ -33,7 +33,6 @@ class NewsListViewModel(private val schedulerProvider: SchedulerProvider,private
     init {
         fetchNewsFromLocal()
         createPaginator()
-
         onRequestLoadMore()
     }
 

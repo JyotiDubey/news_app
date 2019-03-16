@@ -1,5 +1,6 @@
 package com.grab.news.di.component
 
+import android.app.Application
 import com.grab.news.di.module.AppModule
 import com.grab.news.di.module.NewsListModule
 import com.grab.news.di.module.RetrofitModule
@@ -19,7 +20,7 @@ interface AppComponent{
 
     fun plus(module: NewsListModule): NewsListComponent
 
-    fun inject(activity: NewsDetailActivity)
+    fun plus() : NewsDetailComponent
 
     @ActivityScope
     @Subcomponent(modules = [NewsListModule::class])
@@ -27,5 +28,9 @@ interface AppComponent{
         fun inject(activity: NewsListActivity)
     }
 
-
+    @ActivityScope
+    @Subcomponent
+    interface NewsDetailComponent{
+        fun inject(activity: NewsDetailActivity)
+    }
 }

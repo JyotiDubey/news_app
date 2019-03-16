@@ -18,7 +18,7 @@ abstract class NewsRobolectricTestSuite {
      * Test component to inject app level dependencies
      */
     val testAppComponent: TestComponent by lazy {
-        (application as NewsTestApplication).appComponent as TestComponent
+        (application as NewsTestApplication).component
     }
 
 

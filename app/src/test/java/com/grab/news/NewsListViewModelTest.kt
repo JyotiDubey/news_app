@@ -1,19 +1,9 @@
 package com.grab.news
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.common.truth.Truth
-import com.grab.news.data.DataManager
-import com.grab.news.data.NewsDataManager
 import com.grab.news.ui.news.viewmodel.NewsListViewModel
-import io.reactivex.disposables.CompositeDisposable
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
 import javax.inject.Inject
 
 /**
@@ -22,7 +12,7 @@ import javax.inject.Inject
 class NewsListViewModelTest : NewsRobolectricTestSuite() {
 
     @Inject
-    lateinit var newsListViewModel: NewsListViewModel
+    internal lateinit var viewModel: NewsListViewModel
 
     @Before
     fun setUp() {
@@ -31,6 +21,8 @@ class NewsListViewModelTest : NewsRobolectricTestSuite() {
 
     @Test
     fun assertInjected() {
-        Assert.assertTrue(::newsListViewModel.isInitialized)
+        Assert.assertTrue(::viewModel.isInitialized)
+        Assert.assertTrue(viewModel.newsLiveData()?.value?.isEmpty()!!)
+
     }
 }

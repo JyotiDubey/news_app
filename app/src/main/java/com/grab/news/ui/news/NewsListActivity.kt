@@ -79,7 +79,7 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
     }
 
     private fun performDependencyInjections() {
-        NewsApplication.get(this).appComponent
+        NewsApplication.get(this).getAppComponent()
             .plus(NewsListModule(this, this)).inject(this)
     }
 
