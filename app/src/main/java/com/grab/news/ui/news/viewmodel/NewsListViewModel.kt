@@ -55,7 +55,7 @@ class NewsListViewModel(private val schedulerProvider: SchedulerProvider, privat
         pageNumberPublisher.onNext(pageNumber)
     }
     private fun createPaginator() {
-        pageNumberPublisher
+        disposable.addAll(pageNumberPublisher
             .observeOn(Schedulers.computation())
             .onBackpressureDrop()
             .concatMapSingle { page -> dataManager.loadNewsFromServer(page) }
@@ -73,18 +73,18 @@ class NewsListViewModel(private val schedulerProvider: SchedulerProvider, privat
 
                 }
                 hideProgress(refresh = false)
-            }
+            })
     }
 
     private fun fetchNewsFromLocal() {
         showProgress(false)
-        dataManager.loadNewsFromRepository()
+        disposable.add(dataManager.loadNewsFromRepository()
             .compose(schedulerProvider.ioToUiFlowableSchedulers())
             .subscribe {
                 newsLiveData.value = it
                 setEmptyState()
                 hideProgress(false)
-            }
+            })
     }
 
     private fun setEmptyState() = setEmptyState(newsLiveData.value == null || newsLiveData?.value?.isEmpty()!!)

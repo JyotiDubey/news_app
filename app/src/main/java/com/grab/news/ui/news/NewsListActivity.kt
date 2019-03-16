@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -85,8 +84,8 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
         newList.layoutManager = layoutManager
         newList.adapter = adapter
         (newList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        newList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
+        newList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (!newList.canScrollVertically(1)) {
                     viewModel.onRequestLoadMore()
@@ -105,7 +104,7 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
         viewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel::class.java)
     }
 
-    private fun setUpBinding(){
+    private fun setUpBinding() {
         val binding = DataBindingUtil.setContentView<ActivityNewsListBinding>(this, R.layout.activity_news_list)
         binding.lifecycleOwner = this
         binding.swipeToRefreshHandler = this
@@ -117,11 +116,11 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
     private val networkChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val isDeviceOfflineState = if (manager.activeNetworkInfo == null)
+            val isDeviceOffline = if (manager.activeNetworkInfo == null)
                 true
             else
                 !manager.activeNetworkInfo.isConnected
-            viewModel.onNetworkConnectivityChanged(isDeviceOfflineState)
+            viewModel.onNetworkConnectivityChanged(isDeviceOffline)
         }
     }
 }

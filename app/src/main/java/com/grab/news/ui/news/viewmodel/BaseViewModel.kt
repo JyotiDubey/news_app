@@ -22,9 +22,11 @@ open class BaseViewModel : ViewModel(){
     fun refreshLiveData() = refreshState as LiveData<Boolean>
 
 
-    fun onNetworkConnectivityChanged(deviceNetworkState: Boolean) {
-        isDeviceOfflineState.value = deviceNetworkState
+    fun onNetworkConnectivityChanged(isDeviceOffline: Boolean) {
+        isDeviceOfflineState.value = isDeviceOffline
     }
+
+    fun setEmptyState(empty:Boolean) = shouldShowEmptyState.postValue(empty)
 
     fun showProgress(refresh:Boolean){
         if (refresh) {
@@ -32,10 +34,6 @@ open class BaseViewModel : ViewModel(){
         } else {
             progress.postValue(true)
         }
-    }
-
-    fun setEmptyState(empty:Boolean) {
-        shouldShowEmptyState.postValue(empty)
     }
 
     fun hideProgress(refresh:Boolean){
@@ -47,8 +45,9 @@ open class BaseViewModel : ViewModel(){
     }
 
     override fun onCleared() {
-        disposable.dispose()
         super.onCleared()
+        disposable.dispose()
+
     }
 
 }
