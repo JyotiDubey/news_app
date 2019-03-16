@@ -43,14 +43,12 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
 
         performDependencyInjections()
 
-        viewModel = obtainViewModel()
-        val binding = setUpBinding()
-        binding.lifecycleOwner = this
-        binding.swipeToRefreshHandler = this
-        binding.retryButtonClickHandler = this
-        binding.viewModel = viewModel
+        obtainViewModel()
+
+        setUpBinding()
 
         setUpAdapter()
+
         addNewsListDataUpdateObserver()
     }
 
@@ -103,10 +101,18 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
         })
     }
 
-    private fun obtainViewModel() = ViewModelProviders.of(this, factory).get(NewsListViewModel::class.java)
+    private fun obtainViewModel() {
+        viewModel = ViewModelProviders.of(this, factory).get(NewsListViewModel::class.java)
+    }
 
-    private fun setUpBinding() =
-        DataBindingUtil.setContentView<ActivityNewsListBinding>(this, R.layout.activity_news_list)
+    private fun setUpBinding(){
+        val binding = DataBindingUtil.setContentView<ActivityNewsListBinding>(this, R.layout.activity_news_list)
+        binding.lifecycleOwner = this
+        binding.swipeToRefreshHandler = this
+        binding.retryButtonClickHandler = this
+        binding.viewModel = viewModel
+    }
+
 
     private val networkChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {

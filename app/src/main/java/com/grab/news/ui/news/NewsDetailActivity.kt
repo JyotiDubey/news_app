@@ -43,17 +43,12 @@ class NewsDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         performDependencyInjections()
 
-        viewModel = obtainViewModel()
+        obtainViewModel()
 
-        val binding = setUpBinding()
-
-        binding.news = intent.extras.getParcelable(EXTRA_NEWS) as News
-
-        binding.lifecycleOwner = this
-
-        binding.viewModel = viewModel
+        setUpBinding()
 
         setupWebView()
 
@@ -64,7 +59,6 @@ class NewsDetailActivity : AppCompatActivity() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(webView, url)
                 viewModel.hideProgress(false)
-
             }
 
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
@@ -72,15 +66,21 @@ class NewsDetailActivity : AppCompatActivity() {
                 viewModel.showProgress(false)
 
             }
-
         }
 
     }
 
-    private fun setUpBinding() =
-        DataBindingUtil.setContentView<ActivityNewsDetailBinding>(this, R.layout.activity_news_detail)
+    private fun setUpBinding() {
+        val binding = DataBindingUtil.setContentView<ActivityNewsDetailBinding>(this, R.layout.activity_news_detail)
+        binding.news = intent.extras.getParcelable(EXTRA_NEWS) as News
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+    }
 
-    private fun obtainViewModel() = ViewModelProviders.of(this, factory).get(NewsDetailViewModel::class.java)
+
+    private fun obtainViewModel() {
+        viewModel = ViewModelProviders.of(this, factory).get(NewsDetailViewModel::class.java)
+    }
 
     private fun performDependencyInjections() {
         NewsApplication.get(this).getAppComponent().inject(this)
