@@ -2,11 +2,11 @@ package com.grab.news.ui.news
 
 import android.webkit.WebView
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.grab.news.R
+import com.grab.news.data.imageloader.ImageLoader
 import com.grab.news.data.model.News
 
 /**
@@ -19,20 +19,25 @@ class BindingUtils {
         @JvmStatic
         fun populateWebview(view: WebView, webViewContent: News) {
             val settings = view.settings
-            settings.builtInZoomControls = true
-            settings.displayZoomControls = false
-            settings.javaScriptEnabled = true
+            settings.apply {
+                builtInZoomControls = true
+                displayZoomControls = false
+                javaScriptEnabled = true
+            }
             webViewContent.url?.let { view.loadUrl(it) }
 
         }
 
-        @BindingAdapter("bind:src")
+        @BindingAdapter(value= ["imageLoader", "src"], requireAll = false)
         @JvmStatic
-        fun populateImage(view: ImageView ,url: String?) {
-            Glide.with(view.context)
-                .load(url)
-                .apply(RequestOptions().error(R.drawable.ic_newspaper))
-                .into(view)
+        fun populateImage(view: ImageView, imageLoader: ImageLoader, url: String?) {
+            url?.let {
+                imageLoader.loadImage(view,url, ContextCompat.getDrawable(view.context,R.drawable.ic_newspaper))
+            }
+//            Glide.with(view.context)
+//                .load(url)
+//                .apply(RequestOptions().error(R.drawable.ic_newspaper))
+//                .into(view)
 
         }
 

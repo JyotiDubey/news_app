@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.grab.news.NewsApplication
 import com.grab.news.R
+import com.grab.news.data.imageloader.ImageLoader
 import com.grab.news.data.model.News
 import com.grab.news.databinding.ActivityNewsListBinding
 import com.grab.news.di.module.NewsListModule
@@ -34,6 +35,7 @@ class NewsListActivity : AppCompatActivity(), NewsListViewModel.NewsListScreenAc
     internal lateinit var adapter: NewsListAdapter
     @Inject
     internal lateinit var layoutManager: LinearLayoutManager
+
 
     private lateinit var viewModel: NewsListViewModel
 

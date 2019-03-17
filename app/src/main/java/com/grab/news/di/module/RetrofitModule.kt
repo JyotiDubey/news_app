@@ -1,12 +1,10 @@
 package com.grab.news.di.module
 
-import android.content.Context
 import com.grab.news.BASE_URL
 import com.grab.news.data.remote.retrofit.NewsService
 import com.grab.news.di.BaseUrlInfo
 import dagger.Module
 import dagger.Provides
-import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -17,7 +15,7 @@ import javax.inject.Singleton
  * Created by jyotidubey on 2019-03-15.
  */
 @Module
-class RetrofitModule(val context: Context) {
+class RetrofitModule {
 
     @Provides
     @Singleton

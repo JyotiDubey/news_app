@@ -3,8 +3,10 @@ package com.grab.news.data.remote.retrofit
 import com.grab.news.BuildConfig
 import com.grab.news.data.model.NewsListResponse
 import io.reactivex.Single
+import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 /**
  * Created by jyotidubey on 2019-03-09.
@@ -16,5 +18,6 @@ interface NewsService{
         @Query("country") country: String = "us",
         @Query("apiKey") api_key: String = BuildConfig.ApiKey
     ): Single<NewsListResponse>
+
 
 }

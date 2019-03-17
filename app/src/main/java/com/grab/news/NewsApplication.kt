@@ -5,6 +5,8 @@ import android.content.Context
 import com.grab.news.di.component.AppComponent
 import com.grab.news.di.component.DaggerAppComponent
 import com.grab.news.di.module.AppModule
+import com.grab.news.di.module.ImageLoaderModule
+import com.grab.news.di.module.RepositoryModule
 import com.grab.news.di.module.RetrofitModule
 
 /**
@@ -23,7 +25,9 @@ open class NewsApplication:Application(){
         super.onCreate()
         appComponent = DaggerAppComponent.builder()
             .appModule(AppModule(this))
-            .retrofitModule(RetrofitModule(this))
+            .retrofitModule(RetrofitModule())
+            .repositoryModule(RepositoryModule())
+            .imageLoaderModule(ImageLoaderModule())
             .build()
     }
 
