@@ -42,6 +42,8 @@ Test - View model test is achieved by injecting MockDataSource
 
 * Better Error handling 
 
+* Better icons and images :smiley:
+
 
 
 
