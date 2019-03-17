@@ -16,8 +16,7 @@ interface NewsService{
     fun loadNews(
         @Query("page") page: Int,
         @Query("country") country: String = "us",
-        @Query("apiKey") api_key: String = BuildConfig.ApiKey
+        @Query("apiKey") api_key: String = BuildConfig.API_KEY
     ): Single<NewsListResponse>
-
 
 }

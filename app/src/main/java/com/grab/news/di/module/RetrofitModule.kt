@@ -1,6 +1,6 @@
 package com.grab.news.di.module
 
-import com.grab.news.BASE_URL
+import com.grab.news.BuildConfig
 import com.grab.news.data.remote.retrofit.NewsService
 import com.grab.news.di.BaseUrlInfo
 import dagger.Module
@@ -25,7 +25,7 @@ class RetrofitModule {
 
     @Provides
     @BaseUrlInfo
-    internal fun provideBaseUrl() = BASE_URL
+    internal fun provideBaseUrl() = BuildConfig.BASE_URL
 
     @Provides
     @Singleton

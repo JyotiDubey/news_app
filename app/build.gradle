@@ -20,13 +20,16 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+
         debug {
-            buildConfigField 'String', "ApiKey", newsServiceApiKey
+            buildConfigField("String", "BASE_URL", "\"https://newsapi.org/\"")
+            buildConfigField("String", "API_KEY", "\"b7b956103d624822bb5c1cd08ef38c08\"")
         }
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', "ApiKey", newsServiceApiKey
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "BASE_URL", "\"https://newsapi.org/\"")
+            buildConfigField("String", "API_KEY", "\"b7b956103d624822bb5c1cd08ef38c08\"")
         }
     }
     dataBinding {
