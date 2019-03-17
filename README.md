@@ -27,6 +27,7 @@ Allows user to see all the news that appeared during his/her last app session ev
 # Architecture
 
 This project used MVVM architecture to avoid logical code in Activity and separate data related code.Loose coupling by making code dependent on interfaces rather than implementations eg: DataManager, ApiHelper etc
+
 Activities are only responsible to wait on event from its respective viewmodel and change the content on the screen.
 
 Test - View model test is achieved by injecting MockDataSource
