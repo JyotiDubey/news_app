@@ -55,7 +55,7 @@ class NewsListViewModel(private val schedulerProvider: SchedulerProvider, privat
         pageNumberPublisher.onNext(pageNumber)
     }
     private fun createPaginator() {
-        disposable.addAll(pageNumberPublisher
+        disposable.add(pageNumberPublisher
             .observeOn(Schedulers.computation())
             .onBackpressureDrop()
             .concatMapSingle { page -> dataManager.loadNewsFromServer(page) }
