@@ -1,9 +1,9 @@
 package com.grab.news.scheduler
 
 import io.reactivex.Scheduler
-import javax.inject.Inject
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 /**
  * Created by jyotidubey on 2019-03-16.

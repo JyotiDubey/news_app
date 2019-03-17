@@ -1,6 +1,5 @@
 package com.grab.news
 
-import com.grab.news.di.DaggerTestComponent
 import com.grab.news.di.TestCommonModule
 import com.grab.news.di.TestComponent
 import com.grab.news.di.TestSchedulerModule

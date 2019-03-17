@@ -6,7 +6,6 @@ import android.widget.ImageView
 import com.grab.news.data.imageloader.ImageLoadParams
 import com.grab.news.data.imageloader.ImageLoader
 import com.grab.news.data.imageloader.cache.ImageCache
-import com.grab.news.data.imageloader.cache.InMemoryImageCache
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

@@ -1,7 +1,6 @@
 package com.grab.news.di
 
 import com.grab.news.NewsListViewModelTest
-import com.grab.news.di.component.AppComponent
 import dagger.Component
 import javax.inject.Singleton
 

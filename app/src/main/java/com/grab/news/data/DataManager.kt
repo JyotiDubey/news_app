@@ -1,8 +1,6 @@
 package com.grab.news.data
 
 import com.grab.news.data.model.News
-import com.grab.news.data.model.NewsListResponse
-import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 

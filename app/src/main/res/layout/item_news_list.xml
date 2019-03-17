@@ -43,6 +43,7 @@
                                                          android:layout_gravity="center_vertical"
                                                          android:gravity="center_vertical"
                                                          style="@style/TextAppearance.AppCompat.Small"
+                                                         android:layout_margin="@dimen/margin_4dp"
                                                          android:text="@{news.author+'|'+news.publishedAt}"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.cardview.widget.CardView>

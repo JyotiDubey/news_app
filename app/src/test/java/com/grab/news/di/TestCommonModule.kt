@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.grab.news.data.DataManager
 import com.grab.news.data.model.News
-import com.grab.news.data.model.NewsListResponse
 import com.grab.news.scheduler.SchedulerProvider
 import com.grab.news.ui.news.viewmodel.NewsDetailViewModel
 import com.grab.news.ui.news.viewmodel.NewsListViewModel
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import java.util.concurrent.TimeUnit
