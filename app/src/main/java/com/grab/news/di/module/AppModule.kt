@@ -3,27 +3,11 @@ package com.grab.news.di.module
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
-import com.grab.news.APP_DATABASE_NAME
-import com.grab.news.data.DataManager
-import com.grab.news.data.NewsDataManager
-import com.grab.news.data.imageloader.ImageLoader
-import com.grab.news.data.imageloader.cache.ImageCache
-import com.grab.news.data.imageloader.cache.InMemoryImageCache
-import com.grab.news.data.local.database.AppDatabase
-import com.grab.news.data.local.database.DBHelper
-import com.grab.news.data.local.database.NewsDBHelper
-import com.grab.news.data.local.database.NewsDao
-import com.grab.news.data.remote.ApiHelper
-import com.grab.news.data.remote.NewsApiHelper
-import com.grab.news.di.DatabaseInfo
-import com.grab.news.di.imageloader.internal.DefaultImageLoader
 import com.grab.news.scheduler.AppSchedulerProvider
 import com.grab.news.scheduler.SchedulerProvider
 import com.grab.news.ui.news.ViewModelProviderFactory
 import dagger.Module
 import dagger.Provides
-import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Singleton
 
 /**

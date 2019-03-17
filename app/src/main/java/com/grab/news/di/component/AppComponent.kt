@@ -13,7 +13,7 @@ import javax.inject.Singleton
  * Created by jyotidubey on 2019-03-13.
  */
 @Singleton
-@Component(modules = [AppModule::class, RetrofitModule::class, RepositoryModule::class, ImageLoaderModule::class])
+@Component(modules = [AppModule::class, RetrofitModule::class, RepositoryModule::class])
 interface AppComponent{
 
     fun plus(module: NewsListModule): NewsListComponent
